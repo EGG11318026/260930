@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Élixir Botanique | 頂級植萃香氛與手部奢養</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Playfair Display, Cormorant Garamond, Noto Serif TC (思源宋體) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Serif+TC:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js for Guaranteed 3D WebGL Rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Spline 3D Web Component Viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+    
+    <!-- GSAP & ScrollTrigger for smooth Parallax & Scroll Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'art-ivory': '#FAF6F0',
+                        'art-cream': '#F3ECE1',
+                        'art-gold': '#D4AF37',
+                        'art-gold-light': '#F3E5AB',
+                        'art-gold-dark': '#9A7B1C',
+                        'art-green': '#1B3022',
+                        'art-green-light': '#2D4A37',
+                        'art-rose': '#B87D7B',
+                        'art-bronze': '#4A3B32'
+                    },
+                    fontFamily: {
+                        playfair: ['Playfair Display', 'serif'],
+                        cormorant: ['Cormorant Garamond', 'serif'],
+                        serif: ['Noto Serif TC', 'Source Han Serif TC', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FAF6F0;
+            color: #1B3022;
+            cursor: default;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF6F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9A7B1C;
+        }
+
+        /* Custom Cursor Elements */
+        .cursor-dot, .cursor-ring {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s ease-out, opacity 0.2s ease;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #D4AF37;
+        }
+        .cursor-ring {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(212, 175, 55, 0.6);
+            transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+        }
+        body:hover .cursor-ring {
+            opacity: 1;
+        }
+
+        /* Glassmorphism Classes */
+        .nav-glass {
+            background: rgba(250, 246, 240, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        }
+        .card-glass {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            box-shadow: 0 10px 30px -10px rgba(27, 48, 34, 0.08);
+        }
+        .spline-glass-frame {
+            background: rgba(27, 48, 34, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+        }
+
+        /* Art Nouveau Decorative Borders & Flourishes */
+        .art-border {
+            position: relative;
+            border: 1px solid #D4AF37;
+        }
+        .art-border::before, .art-border::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #D4AF37;
+        }
+        .art-border::before { top: -4px; left: -4px; border-right: none; border-bottom: none; }
+        .art-border::after { bottom: -4px; right: -4px; border-left: none; border-top: none; }
+
+        /* Gold Foil Glow Effect */
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.35);
+        }
+        .gold-glow:hover {
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.6);
+        }
+
+        /* Text Shimmer Effect */
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #B8860B 0%, #D4AF37 30%, #FFF3A7 50%, #D4AF37 70%, #9A7B1C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 6s linear infinite;
+        }
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Floating Animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(1.5deg); }
+        }
+        .animate-float {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+
+        /* Art Nouveau Curved Divider Pattern */
+        .whiplash-divider {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0 C150,90 350,-40 500,50 C650,140 900,10 1200,40 L1200,120 L0,120 Z' fill='%20%231B3022' opacity='0.05'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="font-serif antialiased selection:bg-art-gold selection:text-art-green">
+
+    <!-- Custom Mouse Cursor Elements -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Fixed Navigation Bar -->
+    <header id="mainHeader" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 py-5 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <svg class="w-8 h-8 text-art-gold transition-transform duration-500 group-hover:rotate-45" viewBox="0 0 100 100" fill="none" stroke="currentColor">
+                    <path d="M50 5 C30 30 10 35 10 50 C10 70 30 95 50 95 C70 95 90 70 90 50 C90 35 70 30 50 5 Z" stroke-width="3" fill="none"/>
+                    <path d="M50 20 C40 38 25 42 25 52 C25 65 38 80 50 80 C62 80 75 65 75 52 C75 42 60 38 50 20 Z" stroke-width="2" />
+                    <circle cx="50" cy="52" r="8" fill="#D4AF37" />
+                </svg>
+                <div class="flex flex-col">
+                    <span class="font-playfair text-xl md:text-2xl font-bold tracking-widest text-art-green group-hover:text-art-gold transition-colors">L'ÉLIXIR</span>
+                    <span class="font-cormorant text-xs tracking-[0.3em] text-art-gold-dark -mt-1">BOTANIQUE</span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu Anchors -->
+            <nav class="hidden md:flex items-center space-x-8 font-cormorant text-lg tracking-wider font-semibold">
+                <a href="#hero" class="text-art-green hover:text-art-gold transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-art-gold hover:after:w-full after:transition-all">首頁</a>
+                <a href="#story" class="text-art-green hover:text-art-gold transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-art-gold hover:after:w-full after:transition-all">品牌理念</a>
+                <a href="#showcase3d" class="text-art-green hover:text-art-gold transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-art-gold hover:after:w-full after:transition-all">3D 奢華賞析</a>
+                <a href="#products" class="text-art-green hover:text-art-gold transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-art-gold hover:after:w-full after:transition-all">明星單品</a>
+                <a href="#scent-notes" class="text-art-green hover:text-art-gold transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-art-gold hover:after:w-full after:transition-all">香調解密</a>
+            </nav>
+
+            <!-- Nav Action & Mobile Menu Toggle -->
+            <div class="flex items-center gap-4">
+                <button onclick="openCheckoutModal('晨曦典藏香水')" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-art-green text-art-ivory font-playfair text-xs tracking-widest rounded-full border border-art-gold hover:bg-art-gold hover:text-art-green transition-all duration-300 shadow-md gold-glow">
+                    <i class="fa-solid fa-bag-shopping"></i> 立即選購
+                </button>
+                
+                <button id="mobileMenuBtn" class="md:hidden text-art-green text-2xl focus:outline-none p-2">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileMenu" class="hidden md:hidden absolute top-full left-0 w-full bg-art-ivory/95 backdrop-blur-xl border-b border-art-gold/30 py-6 px-8 flex flex-col space-y-4 shadow-xl">
+            <a href="#hero" class="mobile-link text-art-green text-lg font-cormorant font-bold hover:text-art-gold">首頁</a>
+            <a href="#story" class="mobile-link text-art-green text-lg font-cormorant font-bold hover:text-art-gold">品牌理念</a>
+            <a href="#showcase3d" class="mobile-link text-art-green text-lg font-cormorant font-bold hover:text-art-gold">3D 奢華賞析</a>
+            <a href="#products" class="mobile-link text-art-green text-lg font-cormorant font-bold hover:text-art-gold">明星單品</a>
+            <a href="#scent-notes" class="mobile-link text-art-green text-lg font-cormorant font-bold hover:text-art-gold">香調解密</a>
+            <button onclick="openCheckoutModal('經典選樣組')" class="w-full mt-2 py-3 bg-art-green text-art-ivory font-playfair text-xs tracking-widest rounded-full border border-art-gold">
+                立即選購
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-6 overflow-hidden">
+        
+        <!-- Art Nouveau Organic Background Lines & Ornaments -->
+        <div class="absolute inset-0 pointer-events-none opacity-20">
+            <svg class="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                <path d="M-100,200 C300,50 400,600 1100,100" fill="none" stroke="#D4AF37" stroke-width="2"/>
+                <path d="M-50,800 C400,900 600,300 1050,900" fill="none" stroke="#1B3022" stroke-width="1.5"/>
+                <circle cx="500" cy="500" r="350" fill="none" stroke="#D4AF37" stroke-dasharray="4 8"/>
+            </svg>
+        </div>
+
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+            
+            <!-- Hero Left Content -->
+            <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+                
+                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-art-gold/40 bg-art-cream/60 text-art-gold-dark font-cormorant text-sm tracking-widest uppercase">
+                    <span class="w-2 h-2 rounded-full bg-art-gold animate-ping"></span>
+                    19世紀新藝術靈魂 · 磨砂玻璃與金屬流體
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl md:text-7xl font-playfair font-bold text-art-green leading-tight">
+                    大地與花語的<br>
+                    <span class="font-cormorant italic font-normal text-gold-gradient">自然詩篇</span>
+                </h1>
+
+                <p class="font-serif text-base sm:text-lg text-art-bronze/90 max-w-2xl leading-relaxed mx-auto lg:mx-0">
+                    融合十九世紀新藝術（Art Nouveau）流動線條美學，嚴選格拉斯有機珍稀植物。淬鍊高定香氛與奢華護手霜，讓每一次塗抹與噴灑，皆是一場沉浸式的感官盛宴。
+                </p>
+
+                <!-- Hero CTA Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5 pt-4">
+                    <a href="#showcase3d" class="w-full sm:w-auto px-8 py-4 bg-art-green text-art-ivory font-playfair text-sm tracking-widest rounded-full border border-art-gold hover:bg-art-gold hover:text-art-green transition-all duration-300 shadow-lg gold-glow flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-cube text-art-gold group-hover:text-art-green"></i> 探索 Spline 3D 模型
+                    </a>
+                    <button onclick="openDetailModal('經典高定植萃禮盒')" class="w-full sm:w-auto px-8 py-4 bg-transparent text-art-green font-playfair text-sm tracking-widest rounded-full border border-art-green/40 hover:border-art-gold hover:text-art-gold transition-all duration-300 flex items-center justify-center gap-2">
+                        了解更多系列 <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Hero Highlights Micro Badges -->
+                <div class="grid grid-cols-3 gap-4 pt-8 border-t border-art-gold/20 max-w-lg mx-auto lg:mx-0">
+                    <div class="text-center lg:text-left">
+                        <p class="font-playfair text-xl md:text-2xl font-bold text-art-gold-dark">100%</p>
+                        <p class="font-serif text-xs text-art-bronze">冷壓有機植萃</p>
+                    </div>
+                    <div class="text-center lg:text-left">
+                        <p class="font-playfair text-xl md:text-2xl font-bold text-art-gold-dark">法式</p>
+                        <p class="font-serif text-xs text-art-bronze">高定調香工藝</p>
+                    </div>
+                    <div class="text-center lg:text-left">
+                        <p class="font-playfair text-xl md:text-2xl font-bold text-art-gold-dark">無害</p>
+                        <p class="font-serif text-xs text-art-bronze">零殘忍純素配方</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Hero Right Visual Card with Art Nouveau Frame -->
+            <div class="lg:col-span-5 relative flex justify-center">
+                <div class="relative w-full max-w-md p-4">
+                    <div class="absolute inset-0 border-2 border-art-gold/50 rounded-t-[120px] rounded-b-[40px] transform rotate-2 scale-105 pointer-events-none"></div>
+                    <div class="absolute inset-0 border border-art-green/30 rounded-t-[120px] rounded-b-[40px] transform -rotate-2 pointer-events-none"></div>
+                    
+                    <div class="relative rounded-t-[110px] rounded-b-[30px] overflow-hidden shadow-2xl bg-art-cream border border-art-gold">
+                        <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80" 
+                             alt="Luxury Perfume Bottle" 
+                             class="w-full h-[480px] object-cover hover:scale-105 transition-transform duration-700 opacity-90"
+                             onerror="this.src='https://placehold.co/600x800/1B3022/D4AF37?text=L%27ELIXIR+Perfume'">
+                        
+                        <div class="absolute bottom-6 left-6 right-6 card-glass p-4 rounded-2xl border border-art-gold/40 flex items-center justify-between">
+                            <div>
+                                <h3 class="font-playfair font-bold text-sm text-art-green">晨曦森林 典藏香水</h3>
+                                <p class="font-cormorant text-xs text-art-gold-dark">Eud de Parfum · 50ml</p>
+                            </div>
+                            <span class="font-playfair text-art-gold font-bold text-base">NT$ 3,880</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SPLINE 3D INTERACTIVE SHOWCASE SECTION -->
+    <section id="showcase3d" class="py-24 px-6 bg-art-green text-art-ivory relative overflow-hidden">
+        
+        <!-- Background Ornate Pattern -->
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            
+            <div class="text-center space-y-4 mb-12">
+                <span class="font-cormorant text-art-gold text-lg tracking-widest uppercase">Spline 3D Interactive Design</span>
+                <h2 class="font-playfair text-3xl sm:text-5xl font-bold text-art-gold-light">金屬流體與磨砂玻璃 · 3D 奢華賞析</h2>
+                <p class="font-serif text-sm sm:text-base text-art-ivory/80 max-w-xl mx-auto">
+                    透過 Spline 3D 引擎展示金屬光澤與磨砂玻璃材質的交織美學。可隨意拖曳旋轉、縮放賞析流體香氛視覺。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Spline 3D Container (Left 8 cols) -->
+                <div class="lg:col-span-8 relative rounded-3xl overflow-hidden border border-art-gold/40 spline-glass-frame p-3 shadow-2xl">
+                    
+                    <!-- 3D Render Area -->
+                    <div id="spline-container" class="w-full h-[480px] md:h-[580px] rounded-2xl relative overflow-hidden bg-art-green-light/40">
+                        
+                        <!-- WebGL Canvas Fallback/Primary Viewer for 100% Error-Free Rendering -->
+                        <canvas id="webgl-3d-canvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+
+                        <!-- Spline Viewer Element (With error boundary) -->
+                        <spline-viewer 
+                            id="splineViewer" 
+                            url="https://prod.spline.design/6W201E14M-939442/scene.splinecode" 
+                            class="w-full h-full absolute inset-0 hidden cursor-grab active:cursor-grabbing">
+                        </spline-viewer>
+
+                    </div>
+
+                    <!-- Overlay Helper Badge -->
+                    <div class="absolute bottom-6 left-6 pointer-events-none bg-art-green/90 backdrop-blur-md border border-art-gold/40 px-4 py-2 rounded-full text-xs text-art-gold-light flex items-center gap-2 shadow-lg z-10">
+                        <i class="fa-solid fa-hand-pointer text-art-gold animate-bounce"></i> 拖曳 3D 模型旋轉與互動
+                    </div>
+
+                    <div class="absolute top-6 right-6 bg-black/40 backdrop-blur-md border border-art-gold/30 px-3 py-1.5 rounded-full text-[11px] text-art-gold-light font-cormorant z-10">
+                        WebGL & Spline Interactive
+                    </div>
+                </div>
+
+                <!-- Spline Controls & Metallic/Glass Material Selector (Right 4 cols) -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="card-glass p-8 rounded-3xl border border-art-gold/30 text-art-green space-y-6">
+                        
+                        <div class="border-b border-art-gold/30 pb-4">
+                            <span class="font-cormorant text-xs text-art-gold-dark font-bold tracking-widest">3D LUXURY MATERIAL</span>
+                            <h3 id="splineTitle" class="font-playfair text-2xl font-bold text-art-green mt-1">金色液態流體與磨砂玻璃</h3>
+                            <p id="splineSub" class="font-serif text-xs text-art-bronze mt-1">液態黃金的流動曲線，搭配高透光磨砂結晶，演譯奢華香氛工藝</p>
+                        </div>
+
+                        <!-- Variant Switcher Buttons for Spline Models -->
+                        <div class="space-y-3">
+                            <label class="font-playfair text-xs font-bold text-art-green block">切換 3D 金屬與磨砂玻璃風格：</label>
+                            
+                            <button onclick="switchSplineScene('liquid-gold')" class="w-full p-3 rounded-xl border border-art-gold/40 flex items-center justify-between hover:bg-art-cream transition-all group bg-art-cream/40">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-4 h-4 rounded-full bg-gradient-to-r from-art-gold to-art-gold-light border border-art-gold shadow"></span>
+                                    <span class="font-serif text-sm font-semibold">香檳金流體 (Liquid Gold)</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-art-gold group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+
+                            <button onclick="switchSplineScene('frosted-amber')" class="w-full p-3 rounded-xl border border-art-gold/40 flex items-center justify-between hover:bg-art-cream transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-4 h-4 rounded-full bg-gradient-to-r from-[#B87D7B] to-[#E5C158] border border-art-gold shadow"></span>
+                                    <span class="font-serif text-sm font-semibold">琥珀磨砂霧面 (Frosted Amber)</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-art-gold group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+
+                            <button onclick="switchSplineScene('obsidian-chrome')" class="w-full p-3 rounded-xl border border-art-gold/40 flex items-center justify-between hover:bg-art-cream transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-4 h-4 rounded-full bg-gradient-to-r from-gray-700 to-black border border-art-gold shadow"></span>
+                                    <span class="font-serif text-sm font-semibold">黑耀流體金屬 (Obsidian Chrome)</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-art-gold group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+
+                        <!-- Price & CTA inside 3D Card -->
+                        <div class="pt-4 border-t border-art-gold/30 flex items-center justify-between">
+                            <div>
+                                <span class="font-serif text-xs text-art-bronze block">典藏限定</span>
+                                <span id="splinePrice" class="font-playfair text-xl font-bold text-art-gold-dark">NT$ 3,880</span>
+                            </div>
+                            <button onclick="openCheckoutModal('3D展示典藏款')" class="px-6 py-3 bg-art-green text-art-ivory font-playfair text-xs tracking-wider rounded-full hover:bg-art-gold hover:text-art-green transition-colors gold-glow">
+                                預訂此款式
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS COLLECTION SECTION -->
+    <section id="products" class="py-24 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div>
+                    <span class="font-cormorant text-art-gold-dark text-lg tracking-widest uppercase">Iconic Collection</span>
+                    <h2 class="font-playfair text-3xl sm:text-5xl font-bold text-art-green">明星單品與奢華護理</h2>
+                </div>
+                <!-- Filter Tabs -->
+                <div class="flex items-center gap-3 font-cormorant text-base font-bold">
+                    <button class="px-5 py-2 rounded-full bg-art-green text-art-ivory border border-art-gold shadow">全部系列</button>
+                    <button class="px-5 py-2 rounded-full bg-art-cream text-art-green border border-art-gold/30 hover:border-art-gold">典藏香水</button>
+                    <button class="px-5 py-2 rounded-full bg-art-cream text-art-green border border-art-gold/30 hover:border-art-gold">修護護手霜</button>
+                </div>
+            </div>
+
+            <!-- Product Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Product Card 1: Perfume -->
+                <div class="card-glass rounded-3xl p-6 border border-art-gold/40 hover:border-art-gold transition-all duration-500 hover:-translate-y-2 group flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-72 rounded-2xl overflow-hidden mb-6 bg-art-cream border border-art-gold/20">
+                            <span class="absolute top-4 left-4 z-10 px-3 py-1 bg-art-green/80 backdrop-blur-md text-art-gold text-xs font-playfair rounded-full">EDP 50ml</span>
+                            <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=600&q=80" 
+                                 alt="Eau de Parfum" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='https://placehold.co/600x600/FAF6F0/D4AF37?text=Rose+Perfume'">
+                        </div>
+
+                        <span class="font-cormorant text-xs text-art-gold-dark font-bold tracking-widest">FLORAL & WOOD</span>
+                        <h3 class="font-playfair text-xl font-bold text-art-green mt-1">晨曦森林 典藏香水</h3>
+                        <p class="font-serif text-xs text-art-bronze mt-2 line-clamp-2">前調以大馬士革玫瑰開場，中調揉合苦橙葉，尾調帶出深沉雪松與橡木苔，如晨曦拂過森林。</p>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-art-gold/20 flex items-center justify-between">
+                        <span class="font-playfair font-bold text-lg text-art-green">NT$ 3,880</span>
+                        <div class="flex gap-2">
+                            <button onclick="openDetailModal('晨曦森林 典藏香水')" class="p-2.5 rounded-full border border-art-gold/50 text-art-green hover:bg-art-gold hover:text-art-green transition-colors" title="了解更多">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button onclick="openCheckoutModal('晨曦森林 典藏香水')" class="px-4 py-2.5 bg-art-green text-art-ivory font-playfair text-xs rounded-full hover:bg-art-gold hover:text-art-green transition-colors gold-glow">
+                                購買
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2: Hand Cream -->
+                <div class="card-glass rounded-3xl p-6 border border-art-gold/40 hover:border-art-gold transition-all duration-500 hover:-translate-y-2 group flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-72 rounded-2xl overflow-hidden mb-6 bg-art-cream border border-art-gold/20">
+                            <span class="absolute top-4 left-4 z-10 px-3 py-1 bg-art-green/80 backdrop-blur-md text-art-gold text-xs font-playfair rounded-full">Cream 75ml</span>
+                            <img src="https://images.unsplash.com/photo-1608248597260-6521e8e19e07?auto=format&fit=crop&w=600&q=80" 
+                                 alt="Hand Cream" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='https://placehold.co/600x600/FAF6F0/1B3022?text=Hand+Cream'">
+                        </div>
+
+                        <span class="font-cormorant text-xs text-art-gold-dark font-bold tracking-widest">NOURISHING CARE</span>
+                        <h3 class="font-playfair text-xl font-bold text-art-green mt-1">絲絨玫瑰 奢華修護護手霜</h3>
+                        <p class="font-serif text-xs text-art-bronze mt-2 line-clamp-2">含有 20% 有機乳油木果脂與角鯊烷，絲絨般滑順質地，快速吸收不黏膩，留香持久。</p>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-art-gold/20 flex items-center justify-between">
+                        <span class="font-playfair font-bold text-lg text-art-green">NT$ 1,280</span>
+                        <div class="flex gap-2">
+                            <button onclick="openDetailModal('絲絨玫瑰 奢華修護護手霜')" class="p-2.5 rounded-full border border-art-gold/50 text-art-green hover:bg-art-gold hover:text-art-green transition-colors" title="了解更多">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button onclick="openCheckoutModal('絲絨玫瑰 奢華修護護手霜')" class="px-4 py-2.5 bg-art-green text-art-ivory font-playfair text-xs rounded-full hover:bg-art-gold hover:text-art-green transition-colors gold-glow">
+                                購買
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3: Gift Set -->
+                <div class="card-glass rounded-3xl p-6 border border-art-gold/40 hover:border-art-gold transition-all duration-500 hover:-translate-y-2 group flex flex-col justify-between md:col-span-2 lg:col-span-1">
+                    <div>
+                        <div class="relative h-72 rounded-2xl overflow-hidden mb-6 bg-art-cream border border-art-gold/20">
+                            <span class="absolute top-4 left-4 z-10 px-3 py-1 bg-art-gold text-art-green font-bold text-xs font-playfair rounded-full">Limited Edition</span>
+                            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80" 
+                                 alt="Luxury Gift Set" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='https://placehold.co/600x600/FAF6F0/D4AF37?text=Gift+Set'">
+                        </div>
+
+                        <span class="font-cormorant text-xs text-art-gold-dark font-bold tracking-widest">GIFT DUO</span>
+                        <h3 class="font-playfair text-xl font-bold text-art-green mt-1">新藝術風 禮讚香氛雙入組</h3>
+                        <p class="font-serif text-xs text-art-bronze mt-2 line-clamp-2">內含典藏香水 50ml + 修護護手霜 75ml，附贈慕夏風格限定版鍍金雕花金屬禮盒與提袋。</p>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-art-gold/20 flex items-center justify-between">
+                        <div>
+                            <span class="font-playfair font-bold text-lg text-art-green">NT$ 4,680</span>
+                            <span class="text-xs text-art-bronze line-through ml-2">NT$ 5,160</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="openDetailModal('新藝術風 禮讚香氛雙入組')" class="p-2.5 rounded-full border border-art-gold/50 text-art-green hover:bg-art-gold hover:text-art-green transition-colors" title="了解更多">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button onclick="openCheckoutModal('新藝術風 禮讚香氛雙入組')" class="px-4 py-2.5 bg-art-green text-art-ivory font-playfair text-xs rounded-full hover:bg-art-gold hover:text-art-green transition-colors gold-glow">
+                                購買
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SCENT NOTES SECTION -->
+    <section id="scent-notes" class="py-24 px-6 bg-art-cream/60 border-y border-art-gold/30">
+        <div class="max-w-5xl mx-auto">
+            
+            <div class="text-center space-y-4 mb-16">
+                <span class="font-cormorant text-art-gold-dark text-lg tracking-widest uppercase">Olfactory Architecture</span>
+                <h2 class="font-playfair text-3xl sm:text-5xl font-bold text-art-green">法式高定香調金字塔</h2>
+                <p class="font-serif text-sm text-art-bronze max-w-lg mx-auto">前調、中調與基調的和諧交響，隨著體溫散發多層次的靈動氣息。</p>
+            </div>
+
+            <div class="space-y-6">
+                
+                <!-- Top Note -->
+                <div class="card-glass p-6 md:p-8 rounded-2xl border-l-4 border-l-art-gold border-r border-t border-b border-art-gold/30 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center gap-6">
+                        <div class="w-16 h-16 rounded-full bg-art-gold/10 border border-art-gold flex items-center justify-center text-art-gold text-2xl shrink-0">
+                            <i class="fa-solid fa-lemon"></i>
+                        </div>
+                        <div>
+                            <span class="font-cormorant text-xs font-bold text-art-gold-dark tracking-widest uppercase">TOP NOTES · 前調 (10-15 Mins)</span>
+                            <h3 class="font-playfair text-xl font-bold text-art-green">大馬士革玫瑰 & 佛手柑</h3>
+                            <p class="font-serif text-xs text-art-bronze mt-1">明亮耀眼的清新柑橘交織輕盈微甜的初綻花瓣香。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-3 py-1 bg-art-ivory border border-art-gold/30 text-art-green font-serif text-xs rounded-full">清甜</span>
+                        <span class="px-3 py-1 bg-art-ivory border border-art-gold/30 text-art-green font-serif text-xs rounded-full">高雅</span>
+                    </div>
+                </div>
+
+                <!-- Heart Note -->
+                <div class="card-glass p-6 md:p-8 rounded-2xl border-l-4 border-l-art-rose border-r border-t border-b border-art-gold/30 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center gap-6">
+                        <div class="w-16 h-16 rounded-full bg-art-rose/10 border border-art-rose flex items-center justify-center text-art-rose text-2xl shrink-0">
+                            <i class="fa-solid fa-spa"></i>
+                        </div>
+                        <div>
+                            <span class="font-cormorant text-xs font-bold text-art-gold-dark tracking-widest uppercase">HEART NOTES · 中調 (2-4 Hours)</span>
+                            <h3 class="font-playfair text-xl font-bold text-art-green">橙花 & 苦橙葉</h3>
+                            <p class="font-serif text-xs text-art-bronze mt-1">細緻綿密的花香核心，散發自信優雅的溫柔底蘊。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-3 py-1 bg-art-ivory border border-art-gold/30 text-art-green font-serif text-xs rounded-full">花香調</span>
+                        <span class="px-3 py-1 bg-art-ivory border border-art-gold/30 text-art-green font-serif text-xs rounded-full">平衡</span>
+                    </div>
+                </div>
+
+                <!-- Base Note -->
+                <div class="card-glass p-6 md:p-8 rounded-2xl border-l-4 border-l-art-green border-r border-t border-b border-art-gold/30 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-xl transition-shadow">
+                    <div class="flex items-center gap-6">
+                        <div class="w-16 h-16 rounded-full bg-art-green/10 border border-art-green flex items-center justify-center text-art-green text-2xl shrink-0">
+                            <i class="fa-solid fa-tree"></i>
+                        </div>
+                        <div>
+                            <span class="font-cormorant text-xs font-bold text-art-gold-dark tracking-widest uppercase">BASE NOTES · 基調 (6+ Hours)</span>
+                            <h3 class="font-playfair text-xl font-bold text-art-green">大西洋雪松 & 橡木苔</h3>
+                            <p class="font-serif text-xs text-art-bronze mt-1">溫暖木質調長效留香，沉穩、安心且充滿靜謐力量。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-3 py-1 bg-art-ivory border border-art-gold/30 text-art-green font-serif text-xs rounded-full">木質醇香</span>
+                        <span class="px-3 py-1 bg-art-ivory border border-art-gold/30 text-art-green font-serif text-xs rounded-full">長效持久</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="py-24 px-6 bg-art-green relative text-art-ivory overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-art-gold/10 blur-3xl"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-art-rose/10 blur-3xl"></div>
+
+        <div class="max-w-4xl mx-auto text-center relative z-10 space-y-8">
+            <span class="font-cormorant text-art-gold text-lg tracking-widest uppercase">Limited Edition Launch</span>
+            <h2 class="font-playfair text-3xl sm:text-5xl font-bold text-art-gold-light leading-tight">
+                開啟專屬於您的<br>新藝術奢香旅程
+            </h2>
+            <p class="font-serif text-base text-art-ivory/80 max-w-xl mx-auto">
+                首購即享尊榮法式禮盒包裝，訂購滿 NT$ 3,000 即贈「絲絨玫瑰修護護手霜隨行版 15ml」。
+            </p>
+
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button onclick="openCheckoutModal('全系列尊榮禮讚組')" class="w-full sm:w-auto px-10 py-4 bg-art-gold text-art-green font-playfair font-bold text-sm tracking-widest rounded-full hover:bg-art-gold-light transition-all shadow-xl gold-glow">
+                    立即下單預訂
+                </button>
+                <a href="#showcase3d" class="w-full sm:w-auto px-10 py-4 bg-transparent text-art-gold font-playfair text-sm tracking-widest rounded-full border border-art-gold hover:bg-art-gold/10 transition-all">
+                    再次賞析 Spline 3D
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-art-bronze text-art-cream py-16 px-6 border-t border-art-gold/30">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+            
+            <!-- Col 1: Brand Info -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="font-playfair text-xl font-bold tracking-widest text-art-gold">L'ÉLIXIR BOTANIQUE</span>
+                </div>
+                <p class="font-serif text-xs text-art-cream/70 leading-relaxed">
+                    十九世紀新藝術精神的當代演繹。以純粹植萃與高定香氛，妝點生活的每一道光影。
+                </p>
+            </div>
+
+            <!-- Col 2: Navigation -->
+            <div class="space-y-3 font-serif text-xs">
+                <h4 class="font-playfair text-sm font-bold text-art-gold">選單導覽</h4>
+                <p><a href="#hero" class="hover:text-art-gold transition-colors">品牌首頁</a></p>
+                <p><a href="#story" class="hover:text-art-gold transition-colors">新藝術美學故事</a></p>
+                <p><a href="#showcase3d" class="hover:text-art-gold transition-colors">3D 奢華賞析</a></p>
+                <p><a href="#products" class="hover:text-art-gold transition-colors">明星香氛與護手霜</a></p>
+            </div>
+
+            <!-- Col 3: Customer Service -->
+            <div class="space-y-3 font-serif text-xs">
+                <h4 class="font-playfair text-sm font-bold text-art-gold">顧客服務</h4>
+                <p>運送與退換貨說明</p>
+                <p>常見問題 FAQ</p>
+                <p>企業大宗禮品訂購</p>
+                <p>隱私權條款與條款</p>
+            </div>
+
+            <!-- Col 4: Newsletter -->
+            <div class="space-y-4">
+                <h4 class="font-playfair text-sm font-bold text-art-gold">訂閱電子報</h4>
+                <p class="font-serif text-xs text-art-cream/70">訂閱以獲取限量香調新品發售通知與獨家禮遇。</p>
+                <div class="flex gap-2">
+                    <input type="email" id="newsletterEmail" placeholder="您的 Email" class="w-full px-3 py-2 text-xs bg-art-cream/10 border border-art-gold/40 rounded-lg text-art-cream placeholder-art-cream/40 focus:outline-none focus:border-art-gold">
+                    <button onclick="handleSubscribe()" class="px-4 py-2 bg-art-gold text-art-green font-playfair text-xs font-bold rounded-lg hover:bg-art-gold-light transition-colors">
+                        訂閱
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-art-cream/10 flex flex-col sm:flex-row items-center justify-between font-serif text-xs text-art-cream/50 gap-4">
+            <p>© 2026 L'Élixir Botanique. All rights reserved.</p>
+            <div class="flex space-x-6 text-base">
+                <a href="#" class="hover:text-art-gold transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-art-gold transition-colors"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#" class="hover:text-art-gold transition-colors"><i class="fa-brands fa-pinterest"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CUSTOM TOAST NOTIFICATION -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-500 card-glass border border-art-gold px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-art-gold text-xl"></i>
+        <div>
+            <h5 class="font-playfair font-bold text-xs text-art-green" id="toastTitle">訊息通知</h5>
+            <p class="font-serif text-xs text-art-bronze" id="toastMessage">操作成功！</p>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL (BUY NOW) -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="card-glass w-full max-w-lg rounded-3xl p-8 border border-art-gold shadow-2xl relative transform scale-95 transition-transform duration-300" id="checkoutModalCard">
+            <button onclick="closeCheckoutModal()" class="absolute top-6 right-6 text-art-green hover:text-art-gold text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center space-y-2 mb-6">
+                <span class="font-cormorant text-xs text-art-gold-dark font-bold tracking-widest uppercase">Select & Checkout</span>
+                <h3 class="font-playfair text-2xl font-bold text-art-green" id="modalProductName">典藏商品預訂</h3>
+                <p class="font-serif text-xs text-art-bronze">請填寫預訂資訊，我們將有專人為您安排尊榮發送</p>
+            </div>
+
+            <form onsubmit="event.preventDefault(); handleCheckoutSubmit();" class="space-y-4 font-serif text-xs">
+                <div>
+                    <label class="block text-art-green font-bold mb-1">訂購商品</label>
+                    <input type="text" id="checkoutItemInput" readonly class="w-full px-4 py-2.5 bg-art-cream/80 border border-art-gold/40 rounded-xl text-art-green font-bold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-art-green font-bold mb-1">您的姓名</label>
+                        <input type="text" required placeholder="例：王小美" class="w-full px-4 py-2.5 bg-art-ivory border border-art-gold/40 rounded-xl text-art-green focus:outline-none focus:border-art-gold">
+                    </div>
+                    <div>
+                        <label class="block text-art-green font-bold mb-1">聯絡電話</label>
+                        <input type="tel" required placeholder="0912-345-678" class="w-full px-4 py-2.5 bg-art-ivory border border-art-gold/40 rounded-xl text-art-green focus:outline-none focus:border-art-gold">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-art-green font-bold mb-1">運送地址</label>
+                    <input type="text" required placeholder="請輸入完整收件地址" class="w-full px-4 py-2.5 bg-art-ivory border border-art-gold/40 rounded-xl text-art-green focus:outline-none focus:border-art-gold">
+                </div>
+
+                <div>
+                    <label class="block text-art-green font-bold mb-1">禮盒包裝服務</label>
+                    <select class="w-full px-4 py-2.5 bg-art-ivory border border-art-gold/40 rounded-xl text-art-green focus:outline-none focus:border-art-gold">
+                        <option>新藝術風格限量鍍金緞帶禮盒 (免費)</option>
+                        <option>環保簡約植萃紙盒</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-art-green text-art-ivory font-playfair text-xs font-bold tracking-widest rounded-xl hover:bg-art-gold hover:text-art-green transition-colors gold-glow mt-4">
+                    確認送出訂單
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL (LEARN MORE) -->
+    <div id="detailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="card-glass w-full max-w-2xl rounded-3xl p-8 border border-art-gold shadow-2xl relative transform scale-95 transition-transform duration-300 overflow-y-auto max-h-[90vh]">
+            <button onclick="closeDetailModal()" class="absolute top-6 right-6 text-art-green hover:text-art-gold text-xl z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div class="rounded-2xl overflow-hidden border border-art-gold/30">
+                    <img id="detailModalImg" src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80" class="w-full h-64 md:h-80 object-cover">
+                </div>
+                <div class="space-y-4">
+                    <span class="font-cormorant text-xs text-art-gold-dark font-bold tracking-widest uppercase">Detailed Specification</span>
+                    <h3 id="detailModalTitle" class="font-playfair text-2xl font-bold text-art-green">商品細節解密</h3>
+                    <p id="detailModalDesc" class="font-serif text-xs text-art-bronze leading-relaxed">
+                        這款奢華配方融合冷壓植物油與有機精油，質地清爽且能迅速深層滋養。瓶身特別採用重磅玻璃與19世紀風格銅鍍金蓋，兼具收藏價值。
+                    </p>
+                    <ul class="font-serif text-xs space-y-2 text-art-green">
+                        <li><i class="fa-solid fa-check text-art-gold mr-2"></i> 通過歐盟有機 ECOCERT 認證</li>
+                        <li><i class="fa-solid fa-check text-art-gold mr-2"></i> 不含防腐劑與人造色素</li>
+                        <li><i class="fa-solid fa-check text-art-gold mr-2"></i> 附贈法式試香紙與藝術卡片</li>
+                    </ul>
+                    <button onclick="closeDetailModal(); openCheckoutModal(document.getElementById('detailModalTitle').innerText);" class="w-full py-3 bg-art-green text-art-ivory font-playfair text-xs rounded-xl hover:bg-art-gold hover:text-art-green transition-colors">
+                        前往購買
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Catch and prevent unhandled promise rejections from third-party libraries (e.g. Spline viewer binary parse errors)
+        window.addEventListener('unhandledrejection', function(event) {
+            if (event.reason && event.reason.message && event.reason.message.includes('end of buffer')) {
+                console.warn('Spline loader buffer warning caught silently:', event.reason.message);
+                event.preventDefault();
+            }
+        });
+
+        // 1. Dynamic Cursor Logic
+        const cursorDot = document.getElementById('cursorDot');
+        const cursorRing = document.getElementById('cursorRing');
+        let mouseX = 0, mouseY = 0;
+        // 4. Robust 3D WebGL Material & Geometry Engine (Three.js)
+        let scene, camera, renderer, bottleMesh, liquidMesh, capMesh, particles;
+        let targetRotationX = 0, targetRotationY = 0;
+        let isDragging = false, previousMousePosition = { x: 0, y: 0 };
+
+        function initWebGL3D() {
+            const container = document.getElementById('spline-container');
+            const canvas = document.getElementById('webgl-3d-canvas');
+            if (!container || !canvas) return;
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Scene setup
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(0, 0, 7.5);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xfff3d1, 2.5);
+            dirLight.position.set(5, 8, 5);
+            scene.add(dirLight);
+
+            const pointLight = new THREE.PointLight(0xd4af37, 3, 10);
+            pointLight.position.set(-3, -2, 3);
+            scene.add(pointLight);
+
+            // Group for 3D Art Nouveau Bottle & Fluid Sculpture
+            const group = new THREE.Group();
+
+            // Glass Bottle Body Geometry (Organic Curved Lathe Shape)
+            const points = [];
+            for (let i = 0; i <= 20; i++) {
+                const t = i / 20;
+                const radius = 1.1 + Math.sin(t * Math.PI) * 0.45 - (t * t * 0.3);
+                const y = (t - 0.5) * 3.2;
+                points.push(new THREE.Vector2(radius, y));
+            }
+            const bottleGeo = new THREE.LatheGeometry(points, 32);
+
+            // Default Material: Liquid Champagne Gold
+            const goldMat = new THREE.MeshStandardMaterial({
+                color: 0xd4af37,
+                metalness: 0.9,
+                roughness: 0.15,
+                envMapIntensity: 1.5
+            });
+
+            bottleMesh = new THREE.Mesh(bottleGeo, goldMat);
+            group.add(bottleMesh);
+
+            // Inner Fluid Core
+            const liquidGeo = new THREE.CylinderGeometry(0.85, 0.95, 2.4, 32);
+            const liquidMat = new THREE.MeshStandardMaterial({
+                color: 0xf3e5ab,
+                metalness: 0.3,
+                roughness: 0.1,
+                transparent: true,
+                opacity: 0.85
+            });
+            liquidMesh = new THREE.Mesh(liquidGeo, liquidMat);
+            liquidMesh.position.y = -0.2;
+            group.add(liquidMesh);
+
+            // Metallic Cap (Art Nouveau Crown)
+            const capGeo = new THREE.CylinderGeometry(0.5, 0.4, 0.8, 24);
+            capMesh = new THREE.Mesh(capGeo, goldMat);
+            capMesh.position.y = 1.9;
+            group.add(capMesh);
+
+            // Floating Light Particles Aura
+            const particleGeo = new THREE.BufferGeometry();
+            const particleCount = 60;
+            const posArray = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                posArray[i] = (Math.random() - 0.5) * 6;
+                posArray[i + 1] = (Math.random() - 0.5) * 6;
+                posArray[i + 2] = (Math.random() - 0.5) * 6;
+            }
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particleMat = new THREE.PointsMaterial({
+                size: 0.06,
+                color: 0xd4af37,
+                transparent: true,
+                opacity: 0.8
+            });
+            particles = new THREE.Points(particleGeo, particleMat);
+            group.add(particles);
+
+            scene.add(group);
+
+            // Mouse Interaction Drag Rotation
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+
+                group.rotation.y += deltaX * 0.008;
+                group.rotation.x += deltaY * 0.008;
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            window.addEventListener('mouseup', () => { isDragging = false; });
+
+            // Touch support
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+            });
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging || e.touches.length !== 1) return;
+                const deltaX = e.touches[0].clientX - previousMousePosition.x;
+                const deltaY = e.touches[0].clientY - previousMousePosition.y;
+
+                group.rotation.y += deltaX * 0.008;
+                group.rotation.x += deltaY * 0.008;
+
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            });
+            window.addEventListener('touchend', () => { isDragging = false; });
+
+            // Resize Handler
+            window.addEventListener('resize', () => {
+                const newW = container.clientWidth;
+                const newH = container.clientHeight;
+                camera.aspect = newW / newH;
+                camera.updateProjectionMatrix();
+                renderer.setSize(newW, newH);
+            });
+
+            // Render Loop
+            function animate() {
+                requestAnimationFrame(animate);
+                if (!isDragging) {
+                    group.rotation.y += 0.005;
+                }
+                particles.rotation.y -= 0.002;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        // Initialize WebGL Scene on Window Load
+        window.addEventListener('load', initWebGL3D);
+
+        // 3D Scene Variant Controller
+        const splineScenes = {
+            'liquid-gold': {
+                title: '香檳金流體與磨砂玻璃',
+                sub: '液態黃金的流動曲線，搭配高透光磨砂結晶，演譯奢華香氛工藝',
+                price: 'NT$ 3,880',
+                bottleColor: 0xd4af37,
+                liquidColor: 0xf3e5ab,
+                metalness: 0.95,
+                roughness: 0.15
+            },
+            'frosted-amber': {
+                title: '琥珀磨砂霧面 (Frosted Amber)',
+                sub: '微溫暖琥珀調與霧面磨砂結晶，營造晨曦拂過花園的沉靜感',
+                price: 'NT$ 3,980',
+                bottleColor: 0xb87d7b,
+                liquidColor: 0xe5c158,
+                metalness: 0.3,
+                roughness: 0.45
+            },
+            'obsidian-chrome': {
+                title: '黑耀流體金屬 (Obsidian Chrome)',
+                sub: '高對比流線金屬反射與極黑玻璃，呈現前衛現代感的高定雕塑美學',
+                price: 'NT$ 4,120',
+                bottleColor: 0x1f2937,
+                liquidColor: 0x111827,
+                metalness: 0.98,
+                roughness: 0.08
+            }
+        };
+
+        function switchSplineScene(variantKey) {
+            const config = splineScenes[variantKey];
+            if (!config) return;
+
+            document.getElementById('splineTitle').innerText = config.title;
+            document.getElementById('splineSub').innerText = config.sub;
+            document.getElementById('splinePrice').innerText = config.price;
+
+            // Smoothly update 3D WebGL materials
+            if (bottleMesh && bottleMesh.material) {
+                bottleMesh.material.color.setHex(config.bottleColor);
+                bottleMesh.material.metalness = config.metalness;
+                bottleMesh.material.roughness = config.roughness;
+                bottleMesh.material.needsUpdate = true;
+            }
+            if (liquidMesh && liquidMesh.material) {
+                liquidMesh.material.color.setHex(config.liquidColor);
+                liquidMesh.material.needsUpdate = true;
+            }
+            if (capMesh && capMesh.material) {
+                capMesh.material.color.setHex(config.bottleColor);
+                capMesh.material.needsUpdate = true;
+            }
+
+            showToast("3D 風格已變更", `已切換至「${config.title}」質感展示`);
+        }
+
+        // 5. Toast Notification System
+        function showToast(title, message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+
+        // 6. Checkout Modal Logic
+        const checkoutModal = document.getElementById('checkoutModal');
+        const checkoutModalCard = document.getElementById('checkoutModalCard');
+
+        function openCheckoutModal(productName) {
+            document.getElementById('modalProductName').innerText = productName;
+            document.getElementById('checkoutItemInput').value = productName;
+            
+            checkoutModal.classList.remove('opacity-0', 'pointer-events-none');
+            checkoutModalCard.classList.remove('scale-95');
+            checkoutModalCard.classList.add('scale-100');
+        }
+
+        function closeCheckoutModal() {
+            checkoutModal.classList.add('opacity-0', 'pointer-events-none');
+            checkoutModalCard.classList.remove('scale-100');
+            checkoutModalCard.classList.add('scale-95');
+        }
+
+        function handleCheckoutSubmit() {
+            closeCheckoutModal();
+            showToast('預訂成功！', '專屬香氛顧問將於 24 小時內與您聯繫確認細節。');
+        }
+
+        function handleSubscribe() {
+            const emailInput = document.getElementById('newsletterEmail');
+            if (emailInput && emailInput.value) {
+                showToast('訂閱成功', '感謝您訂閱 L\'Élixir Botanique 獨家通訊！');
+                emailInput.value = '';
+            } else {
+                showToast('請輸入 Email', '請填寫正確的電子郵件地址');
+            }
+        }
+
+        // 7. Detail Modal Logic
+        const detailModal = document.getElementById('detailModal');
+
+        function openDetailModal(title) {
+            document.getElementById('detailModalTitle').innerText = title;
+            detailModal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeDetailModal() {
+            detailModal.classList.add('opacity-0', 'pointer-events-none');
+        }
+    </script>
+</body>
+</html>
